@@ -60,7 +60,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
             });
 
             return pulls;
-        }
+        };
             
         $scope.spinner = $HUB.call('pullRequests', 'getAll', {
             user: $stateParams.user,
@@ -123,7 +123,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
                 });
                 
             });
-        }
+        };
 
         $scope.closeMore = function(){
             console.log('more closed');
@@ -142,7 +142,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
                 });
 
             });
-        }
+        };
 
         // get the repo
         $scope.repo = repo;
