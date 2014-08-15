@@ -65,8 +65,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
         $scope.spinner = $HUB.call('pullRequests', 'getAll', {
             user: $stateParams.user,
             repo: $stateParams.repo,
-            state: 'open',
-            per_page: 1 // remove later
+            state: 'open'
         }, function(err, pulls) {
 
             if(!err) {
@@ -88,8 +87,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
         $scope.spinner = $HUB.call('pullRequests', 'getAll', {
             user: $stateParams.user,
             repo: $stateParams.repo,
-            state: 'closed',
-            per_page: 1 // remove later
+            state: 'closed'
         }, function(err, pulls) {
 
             if(!err) {
@@ -110,36 +108,45 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
 
 
         $scope.openMore = function(){
-            console.log('more open');
+
             $scope.spinner = $HUB.call('page', 'getNextPage', $scope.open.meta, function(err, res, meta) {
 
-                $scope.open.value = $scope.open.value.concat(res.value);
-                $scope.open.meta = res.meta;
+                if(!err){
+                    getDetails(res);
+                    $scope.open.value = $scope.open.value.concat(res.value);
+                    $scope.open.meta = res.meta;
 
-                $HUB.call('page','hasNextPage', $scope.open.meta, function(err,res,meta){
+                    $HUB.call('page','hasNextPage', $scope.open.meta, function(err,res,meta){
 
-                    $scope.hasMoreOpen = res.value;
+                        if(!err){
+                            $scope.hasMoreOpen = res.value;
+                        }
 
-                });
-                
+                    });
+                }
+
             });
         };
 
         $scope.closeMore = function(){
-            console.log('more closed');
+
             $scope.spinner = $HUB.call('page', 'getNextPage', $scope.closed.meta, function(err, res, meta) {
 
-                $scope.closed.value = $scope.closed.value.concat(res.value);
-                $scope.closed.meta = res.meta;
+                if(!err){
 
-                $HUB.call('page','hasNextPage', $scope.closed.meta, function(err,res,meta){
+                    getDetails(res);
+                    $scope.closed.value = $scope.closed.value.concat(res.value);
+                    $scope.closed.meta = res.meta;
 
-                    console.log('HAS NEXT PAGe');
-                    console.log(res.value);
+                    $HUB.call('page','hasNextPage', $scope.closed.meta, function(err,res,meta){
 
-                    $scope.hasMoreClosed = res.value;
+                        if(!err){
+                            $scope.hasMoreClosed = res.value;
+                        }
+                        
+                    });
+                }
 
-                });
 
             });
         };
