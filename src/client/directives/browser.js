@@ -8,59 +8,50 @@ module.directive('browser', ['$stateParams', '$HUB', '$RPC',
             restrict: 'E',
             templateUrl: '/directives/templates/browser.html',
             scope: {
-                data: '=',
-                comment: '&',
-                comments: '='
+                tree: '=',
+                selected: '='
             },
             link: function(scope, elem, attrs) {
 
-                scope.stack = [];
-
-                scope.path = [];
-
-                scope.$watch('data.value', function(newVal, oldVal) {
-
-                    if (newVal) {
-                        scope.tree = scope.data.value;
-                    }
-                });
+                scope.stack=[], scope.path=[];
 
                 scope.up = function() {
 
-                    scope.file = null;
-
-                    scope.path.pop();
-
-                    var tree = scope.stack.pop();
-
-                    if (tree) {
-                        scope.data = $HUB.call('gitdata', 'getTree', {
-                            user: $stateParams.user,
-                            repo: $stateParams.repo,
-                            sha: tree.sha,
-                        });
+                    if(scope.stack.length) {
+                        scope.file = null;
+                        scope.path.pop();
+                        scope.tree = scope.stack.pop();
                     }
                 };
 
                 scope.down = function(node) {
 
-                    scope.path.push(node.path);
+                    if(node.type === 'tree') {
 
-                    scope.stack.push(scope.tree);
-
-                    if (node.type == 'tree') {
-
-                        scope.data = $HUB.call('gitdata', 'getTree', {
+                        $HUB.call('gitdata', 'getTree', {
                             user: $stateParams.user,
                             repo: $stateParams.repo,
                             sha: node.sha,
+                        }, function(err, res) {
+                            if(!err) {
+                                scope.path.push(node.path);
+                                scope.stack.push(scope.tree);
+                                scope.tree = res.value;
+                            }
                         });
-                    } else if (node.type == 'blob') {
+                    } 
+                    else if(node.type === 'blob') {
 
-                        scope.file = $RPC.call('comm', 'file', {
+                        $RPC.call('files', 'get', {
                             user: $stateParams.user,
                             repo: $stateParams.repo,
                             sha: node.sha
+                        }, function(err, res) {
+                            if(!err) {
+                                scope.path.push(node.path);
+                                scope.stack.push(scope.tree);
+                                scope.file = res.value;
+                            }
                         });
                     }
                 };

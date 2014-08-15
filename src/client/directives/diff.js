@@ -9,7 +9,7 @@ module.directive('diff', ['$stateParams', '$HUB', '$RPC', 'Issue',
             templateUrl: '/directives/templates/diff.html',
             scope: {
                 sha: '=',
-                name: '=',
+                path: '=',
                 patch: '=',
                 status: '=',
                 selected: '='
@@ -103,7 +103,7 @@ module.directive('diff', ['$stateParams', '$HUB', '$RPC', 'Issue',
 
                 scope.select = function(line) {
                     if(line.head) {
-                        var selected = Issue.line(scope.name, line.head);
+                        var selected = Issue.line(scope.path, line.head);
                         scope.selected = scope.selected!==selected ? selected : null;
                     }   
                 };

@@ -65,24 +65,32 @@ module.factory('$RPC', ['$RAW', '$log',
 
 module.factory('$HUB', ['$RAW', '$log',
     function($RAW, $log) {
+
+        var exec = function(type, args, call) {
+            console.log(type, args);
+            var res = new ResultSet();
+            $RAW.call('github', type, args, function(error, value) {
+
+                res.set(error, value.data, value.meta);
+                $log.debug('$HUB', args, res, res.error);
+                if (typeof call === 'function') {
+                    call(res.error, res);
+                }
+            });
+            return res;
+        };
+
         return {
             call: function(o, f, d, c) {
-                var res = new ResultSet();
-                $RAW.call('github', 'call', {
-                    obj: o,
-                    fun: f,
-                    arg: d
-                }, function(error, value) {
-                    res.set(error, value.data, value.meta);
-                    $log.debug('$HUB', o, f, d, res, res.error);
-                    if (typeof c === 'function') {
-                        c(res.error, res);
-                    }
-                });
-                return res;
+                return exec('call', { obj: o, fun: f, arg: d }, c);
+            },
+            wrap: function(o, f, d, w, c) {
+                return exec('wrap', { obj: o, fun: f, arg: d, wrap: w }, c);
             }
         };
     }
+
+
 ]);
 
 
@@ -93,10 +101,22 @@ module.factory('$HUB', ['$RAW', '$log',
 
 module.factory('$HUBService', ['$q', '$HUB',
     function($q, $HUB) {
+
         return {
             call: function(o, f, d) {
                 var deferred = $q.defer();
                 $HUB.call(o, f, d, function(err, obj) {
+                    if (err) {
+                        deferred.reject();
+                    } else {
+                        deferred.resolve(obj);
+                    }
+                });
+                return deferred.promise;
+            },
+            wrap: function(o, f, d, w) {
+                var deferred = $q.defer();
+                $HUB.wrap(o, f, d, w, function(err, obj) {
                     if (err) {
                         deferred.reject();
                     } else {

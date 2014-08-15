@@ -89,6 +89,9 @@ module.exports = {
 
 ************************************************************************************************************/
 
+    //
+    // we can probably remove this
+    //
     file: function(req, done) {
 
         var user = req.args.user;

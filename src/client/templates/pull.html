@@ -61,7 +61,7 @@
 
           <diff ng-repeat="file in files.value" 
                 sha="file.sha"
-                name="file.filename" 
+                path="file.filename" 
                 patch="file.patch" 
                 status="file.status" 
                 selected="$parent.$parent.selection"
@@ -69,7 +69,7 @@
 
         </tab>
         <tab heading="Files">
-        <browser data="tree"></browser>
+          <browser tree="tree.value" selected="$parent.selection"></browser>
         </tab>
         </tabset>
       </div>

@@ -1,0 +1,57 @@
+.code {
+
+    width: 100%;
+
+    tr.selected,
+    tr:not(.chunk):hover {
+        background-color: #f8eec7 !important;
+    }
+ 
+    pre {
+        margin:0; 
+        padding:0px 8px;
+        background:none; 
+        border:none;
+        font-size: $code-font-size;
+    }
+
+    .number {
+        width:30px;
+        text-align: right;
+        border-right:1px solid $code-line-number-color;
+
+        pre {
+            color: $code-line-number-color;
+        }
+    }
+
+    tr:not(.chunk):not(.deletion) .number {
+        cursor: pointer;
+    }
+
+    .select {
+        width: 20px;
+        margin-left: -18px;
+        cursor: pointer;
+        color: $code-line-select-color;
+
+        visibility: hidden;
+        position: absolute;
+    }
+
+    tr.selected .select {
+        visibility: visible;
+    }
+
+    .chunk pre {
+        color: $code-line-number-color;
+    }
+
+    .addition {
+        background-color: #dfd;
+    }
+
+    .deletion {
+        background-color: #ffdddd;
+    }
+}

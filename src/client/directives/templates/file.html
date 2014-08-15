@@ -1,49 +1,14 @@
-<div style="width:100%; overflow-x:scroll;">
-	<table class="table" style="width:100%; font-size:13px; margin-bottom:0;">
-		<tbody ng-repeat="line in lines track by $index" style="border:none;">
-			<tr class="highlight">
-				<td class="comment" style="display:none; position:absolute; width:30px; margin-left:-30px; padding:5px 8px; border:none;">
-					<a href=""><i ng-click="$parent.comment=$index" class="fa fa-comments"></i></a>
-				</td>
-				<td class="highlight" style="width:45px; position:absolute; background:#fff; padding:5px 8px; text-align:right; color:#aaa; border:none; border-right:1px solid; height:28px;">
-					{{ $index+1 }}
-				</td>
-				<td class="highlight" style="padding:5px 10px 5px 55px; border:none;">
-					<pre style="padding:0; margin:0; background:none; border:none;">{{ line || ' ' }}</pre>
-				</td>
-			</tr>
-			<tr ng-show="comment===$index || comments[$index+1]">
-				<td colspan="4" style="border-top:1px solid #aaa; border-bottom:1px solid #aaa; padding:10px 10px 10px 100px;">
-					<div ng-repeat="comment in comments[$index+1]" class="panel panel-default" style="max-width:600px; margin-bottom:10px;">
-						<div class="panel-heading">
-							<img ng-src="{{ comment.user.avatar_url }}" width="14px" />
-							{{ comment.user.login }} <small moment="comment.created_at"></small>
-						</div>
-						<div class="panel-body">
-							{{ comment.body }}
-						</div>
-					</div>
+<table class="code">
+	<tr ng-repeat="line in content track by $index"
+        ng-class="{ selected:selected===match(path, line.head) }">
 
-					<button ng-show="comment!==$index" ng-click="$parent.comment=$index" type="button" class="btn btn-default btn-sm">Add a line note</button>
+        <td class="select" ng-click="select(line)">
+            <i class="fa fa-circle"></i>
+        </td>
 
-					<div ng-show="comment===$index" class="panel panel-default" style="max-width:600px; margin-bottom:10px;">
-						<div class="panel-heading">
-							Comment
-							<i class="fa fa-lg fa-comments pull-right"></i>
-						</div>
-						<div class="panel-body">
-							<textarea class="form-control" rows="3" ng-model="comment_body"></textarea>
-						</div>
-						<div class="panel-footer" style="height:50px;">
-							<input type="checkbox" ng-model="comment_issue"> Also create an issue
-							<span class="pull-right">
-								<button ng-click="$parent.comment=null" type="button" class="btn btn-default btn-sm">Cancel</button>
-								<button ng-click="onComment({body:comment_body, issue:comment_issue, path:path, position:$index, line:$index+1})" type="button" class="btn btn-primary btn-sm">Comment</button>
-							</span>
-						</div>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+		<td class="number" ng-click="select(line)"><pre>{{ line.head }}</pre></td>
+
+		<td><pre>{{ line.content }}</pre></td>
+
+	</tr>
+</table>

@@ -1,7 +1,7 @@
 <accordion class="diff">
 	<accordion-group is-open="open">
 		<accordion-heading>
-			<strong>{{ name }}</strong>
+			<strong>{{ path }}</strong>
 			<button class="btn btn-xs btn-default pull-right" style="margin-left:5px;">
 				&nbsp;<i class="fa" ng-class="{ 'fa-plus':!open, 'fa-minus':open }"></i>&nbsp;
 			</button>
@@ -14,12 +14,12 @@
 		</div>
 		<div ng-show="patch.length">
 			
-			<table>
+			<table class="code">
         		<tr ng-repeat="line in (expanded ? file : patch) track by $index" 
             		ng-class="{ addition:line.add, 
                         		deletion:line.del, 
                         		chunk:line.chunk, 
-                        		selected:selected===match(name, line.head) }">
+                        		selected:selected===match(path, line.head) }">
 
 					<td class="select" ng-click="select(line)">
 						<i class="fa fa-circle"></i>

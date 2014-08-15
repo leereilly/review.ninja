@@ -21,7 +21,13 @@ module.exports = {
         }, function(err, res) {
 
             if(!err) {
-                res.content = parse(new Buffer(res.content, 'base64').toString());
+
+                try {
+                    res.content = parse(new Buffer(res.content, res.encoding).toString());
+                }
+                catch(ex) {
+                    res.content = null;
+                }
             }
 
             done(err, res);
