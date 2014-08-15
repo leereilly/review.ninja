@@ -89,7 +89,7 @@ module.exports = function(req, res) {
         for(var i=0; i<labels.length; i++){
 
             var reg = /pull-request-(\d*)?/;
-            var match = reg.exec(label[i].name); 
+            var match = reg.exec(labels[i].name); 
 
             if (match) {
                 pull_request_number = match[1];
@@ -101,10 +101,13 @@ module.exports = function(req, res) {
     }
 
 
+    //
+    // do we need to do this?
+    //
     function has_review(labels) {
 
         for(var i=0; i<labels.length; i++) {
-            if(labels[i] === 'review.ninja'){
+            if(labels[i].name === 'review.ninja'){
                 return true;
             }
         }
@@ -131,10 +134,9 @@ module.exports = function(req, res) {
             var labels = req.body.issue.labels;
             var state = req.body.issue.state;
             var assignee = req.body.issue.assignee;
-            var repository = req.body.repository;
             var sender = req.body.sender;
-            var user = repository.owner.login;
-            var repo_name = repository.name;
+            var user = req.body.repository.owner.login;
+            var repo_name = req.body.repository.name;
             var review_url = req.body.issue.url;
 
 
@@ -159,7 +161,7 @@ module.exports = function(req, res) {
                                     repo: repo_name,
                                     repo_uuid: uuid,
                                     sha: pull_request.head.sha,
-                                    number: pull_request_number,
+                                    number: pull_request.number,
                                     token: repo.token
                                 }, function(err, data) {
                                     
@@ -185,12 +187,12 @@ module.exports = function(req, res) {
                                 if(err){
                                     return logger.log(err);
                                 }
-                                if(issues.length !== 0 ){
+                                if(issues.length){
                                     return;
                                 }
 
 
-                                get_pull_request(user,repo_name,pull_request_number,repo.token, function(err, pull_request){
+                                get_pull_request(user, repo_name, pull_request_number, repo.token, function(err, pull_request){
 
                                     if(err){
                                         return logger.log(err);
@@ -201,7 +203,7 @@ module.exports = function(req, res) {
                                         repo: repo_name,
                                         repo_uuid: uuid,
                                         sha: pull_request.head.sha,
-                                        number: pull_request_number,
+                                        number: pull_request.number,
                                         token: repo.token
                                     }, function(err, data) {
                                         
