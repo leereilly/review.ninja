@@ -9,6 +9,16 @@
 module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal', 'repo',
     function($scope, $stateParams, $HUB, $RPC, $modal, repo) {
 
+        $HUB.wrap('pullRequests', 'getAll', {
+            user: $stateParams.user,
+            repo: $stateParams.repo
+        }, {
+            obj: 'pull',
+            fun: 'getAll'
+        });
+
+        return;
+
         $scope.open = {
             value: [],
             meta: null
@@ -62,17 +72,20 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
             return pulls;
         };
             
-        $scope.spinner = $HUB.call('pullRequests', 'getAll', {
+        $scope.spinner = $RPC.call('pull', 'getAll', {
             user: $stateParams.user,
             repo: $stateParams.repo,
-            state: 'open'
+            state: 'open',
+            per_page:1
         }, function(err, pulls) {
-
+            console.log(pulls);
             if(!err) {
                 pulls = getDetails(pulls);
 
                 $scope.open.value = $scope.open.value.concat(pulls.value);
-                $scope.open.meta = pulls.meta;
+                $scope.open.meta = pulls.value.meta;
+                console.log('META CLIENT');
+
                
                 $HUB.call('page','hasNextPage', $scope.open.meta, function(err,res,meta){
 
@@ -87,7 +100,8 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
         $scope.spinner = $HUB.call('pullRequests', 'getAll', {
             user: $stateParams.user,
             repo: $stateParams.repo,
-            state: 'closed'
+            state: 'closed',
+            per_page:1
         }, function(err, pulls) {
 
             if(!err) {

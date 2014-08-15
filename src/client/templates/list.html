@@ -13,7 +13,7 @@
         <tabset>
         <tab heading="Open">
 
-          <table class="table">
+          <table class="table" ng-class="{'success':pull.watched}">
             <tr ng-repeat="pull in open.value">
               <td>
                 <span class="fa-stack fa-lg">
@@ -44,13 +44,13 @@
               </td>
             </tr>
           </table>
-            <button type="button" class="btn btn-default btn-md" ng-click="openMore()" style="float:right" ng-show="hasMoreOpen">More</button>
+            <button type="button" class="btn btn-default btn-md" ng-click="openMore()" style="float:right">More</button>
 
         </tab>
 
 
         <tab heading="Closed">
-          <table class="table">
+          <table class="table" ng-class="{'success':pull.watched}">
             <tr ng-repeat="pull in closed.value">
               <td>
                 <span class="fa-stack fa-lg">
@@ -89,6 +89,7 @@
       </div>
 
     </div>
+
 
   </div>
 </div>
