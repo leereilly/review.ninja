@@ -67,7 +67,6 @@ module.factory('$HUB', ['$RAW', '$log',
     function($RAW, $log) {
 
         var exec = function(type, args, call) {
-            console.log(type, args);
             var res = new ResultSet();
             $RAW.call('github', type, args, function(error, value) {
 
@@ -84,8 +83,8 @@ module.factory('$HUB', ['$RAW', '$log',
             call: function(o, f, d, c) {
                 return exec('call', { obj: o, fun: f, arg: d }, c);
             },
-            wrap: function(o, f, d, w, c) {
-                return exec('wrap', { obj: o, fun: f, arg: d, wrap: w }, c);
+            wrap: function(o, f, d, c) {
+                return exec('wrap', { obj: o, fun: f, arg: d }, c);
             }
         };
     }
@@ -102,28 +101,24 @@ module.factory('$HUB', ['$RAW', '$log',
 module.factory('$HUBService', ['$q', '$HUB',
     function($q, $HUB) {
 
+        var exec = function(type, o, f, d) {
+            var deferred = $q.defer();
+            $HUB[type](o, f, d, function(err, obj) {
+                if (err) {
+                    deferred.reject();
+                } else {
+                    deferred.resolve(obj);
+                }
+            });
+            return deferred.promise;
+        };
+
         return {
             call: function(o, f, d) {
-                var deferred = $q.defer();
-                $HUB.call(o, f, d, function(err, obj) {
-                    if (err) {
-                        deferred.reject();
-                    } else {
-                        deferred.resolve(obj);
-                    }
-                });
-                return deferred.promise;
+                return exec('call', o, f, d);
             },
-            wrap: function(o, f, d, w) {
-                var deferred = $q.defer();
-                $HUB.wrap(o, f, d, w, function(err, obj) {
-                    if (err) {
-                        deferred.reject();
-                    } else {
-                        deferred.resolve(obj);
-                    }
-                });
-                return deferred.promise;
+            wrap: function(o, f, d) {
+                return exec('wrap', o, f, d);
             }
         };
     }

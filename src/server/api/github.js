@@ -27,8 +27,6 @@ module.exports = {
 
     wrap: function(req, done) {
         
-        var wrap = req.args.wrap; delete req.args.wrap;
-
         github.call(merge(req.args, {
             token: req.user.token
         }), function(err, res, meta) {
@@ -37,7 +35,7 @@ module.exports = {
                 return done(err);
             }
 
-            api[wrap.obj][wrap.fun](res, function(err, res) {
+            api[req.params.obj][req.params.fun](req.args.arg, res, function(err, res) {
                 done(err, {
                     data: res,
                     meta: meta
