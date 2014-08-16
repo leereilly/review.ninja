@@ -3,8 +3,7 @@ var github = require('../services/github');
 var app = require('../app');
 
 var Conf = require('mongoose').model('Conf');
-var Repo = require('mongoose').model('Repo');
-var Star = require('mongoose').model('Star');
+
 
 module.exports = {
 
