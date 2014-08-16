@@ -30,12 +30,14 @@ module.exports = {
         github.call(merge(req.args, {
             token: req.user.token
         }), function(err, res, meta) {
+            // console.log('REQ');
+            // console.log(req);
 
             if(err) {
                 return done(err);
             }
 
-            api[req.params.obj][req.params.fun](req.args.arg, res, function(err, res) {
+            api[req.args.obj][req.args.fun](req, res, function(err, res) {
                 done(err, {
                     data: res,
                     meta: meta

@@ -4,14 +4,12 @@ var app = require('../app');
 
 var Conf = require('mongoose').model('Conf');
 var Repo = require('mongoose').model('Repo');
+var Star = require('mongoose').model('Star');
 
 module.exports = {
 
-	getAll: function(pulls, done){
 
-
-		console.log('PULLS');
-		console.log(pulls);
+	getAll: function(req, pulls, done){
 
 
 		var repo;	
@@ -22,9 +20,11 @@ module.exports = {
 			repo = null;
 		}
 
+		console.log('REQ');
+		console.log(req);
 
 		Conf.findOne({
-			user: pulls.body.user.id,
+			user: req.user.id,
 			repo: repo
 		}, function(err,conf){
 
@@ -36,10 +36,11 @@ module.exports = {
 
 					for(var key=0; key<conf.watch.length; key++){
 
-						var r = req.body.user + ':' + conf.watch[key];
+						var r = req.args.arg.user + ':' + conf.watch[key];
 						var re = new RegExp(r, 'g');
 
 						if(re.exec(pull.base.label) || re.exec(pull.head.label)){
+							console.log('in here');
 
 							pull.watched = true;
 							break;

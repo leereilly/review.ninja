@@ -57,31 +57,33 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
                     }
 
                 });
+
+                console.log(pull.watched);
+
             });
 
             return pulls;
         };
-            
+        console.log('USER');
+        console.log($stateParams.user);
         $HUB.wrap('pullRequests', 'getAll', {
             user: $stateParams.user,
             repo: $stateParams.repo,
             state: 'open',
-            per_page:1
-        }, {
-            obj: 'pullRequests',
-            fun: 'getAll'
+            per_page:5
         }, function(err, pulls) {
-            console.log('PULLS');
-            console.log(pulls);
+
             if(!err) {
                 pulls = getDetails(pulls);
 
                 $scope.open.value = $scope.open.value.concat(pulls.value);
-                $scope.open.meta = pulls.value.meta;
+                $scope.open.meta = pulls.meta;
 
                
                 $HUB.call('page','hasNextPage', $scope.open.meta, function(err,res,meta){
-
+                    console.log('META');
+                    console.log(res);
+                    console.log(meta);  
                     $scope.hasMoreOpen = res.value;
                     
                 });
@@ -90,29 +92,31 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
 
         });
 
-        // $scope.spinner = $HUB.call('pullRequests', 'getAll', {
-        //     user: $stateParams.user,
-        //     repo: $stateParams.repo,
-        //     state: 'closed',
-        //     per_page:1
-        // }, function(err, pulls) {
 
-        //     if(!err) {
-        //         pulls = getDetails(pulls);
+        $HUB.wrap('pullRequests', 'getAll', {
+            user: $stateParams.user,
+            repo: $stateParams.repo,
+            state: 'closed',
+            per_page:10
+        }, function(err, pulls) {
+            console.log('PULLS');
+            console.log(pulls.meta);
+            if(!err) {
+                pulls = getDetails(pulls);
 
-        //         $scope.closed.value = $scope.closed.value.concat(pulls.value);
-        //         $scope.closed.meta = pulls.meta;
-        //         $HUB.call('page','hasNextPage', $scope.closed.meta, function(err,res,meta){
+                $scope.closed.value = $scope.closed.value.concat(pulls.value);
+                $scope.closed.meta = pulls.meta;
 
-        //             $scope.hasMoreClosed = res.value;
+               
+                $HUB.call('page','hasNextPage', $scope.closed.meta, function(err,res,meta){
+
+                    $scope.hasMoreClosed = res.value;
                     
-        //         });
+                });
 
-        //     }  
+            }   
 
-        // });
-
-
+        });
 
         $scope.openMore = function(){
 
@@ -126,6 +130,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
                     $HUB.call('page','hasNextPage', $scope.open.meta, function(err,res,meta){
 
                         if(!err){
+                                            
                             $scope.hasMoreOpen = res.value;
                         }
 
@@ -159,7 +164,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal
         };
 
         // get the repo
-        // $scope.repo = repo;
+        $scope.repo = repo;
 
     }
 ]);
